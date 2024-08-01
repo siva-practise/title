@@ -1,0 +1,20 @@
+name: Deploy CloudFormation Template
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Deploy CloudFormation stack
+      run: |
+        aws cloudformation deploy \
+          --template-file title/template.yaml
+          --stack-name your-stack-name \
+          aws configure set default.region ap-south-1
+
