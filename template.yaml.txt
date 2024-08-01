@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  websecurity:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 0
+          ToPort: 65535
+          CidrIp: 0.0.0.0/0
+      VpcId: vpc-0e4ea14eb51bf1163
+      GroupDescription: Allow http request
+  webinstance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-068e0f1a600cd311c
+      InstanceType: t2.micro
+      KeyName: instance_practise
+      BlockDeviceMappings:
+       - DeviceName: /dev/xvda
+         Ebs:
+          VolumeType: gp3
+          VolumeSize: 30
+      SecurityGroupIds:
+        - Ref: websecurity
+      SubnetId: subnet-097f73781b5017db0
+      UserData:
+        'Fn::Base64': !Sub |
+          #!/bin/bash
+          sudo yum update -y
+          sudo yum install httpd -y
+          systemctl start httpd
