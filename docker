@@ -1,15 +1,16 @@
-FROM python:3.7
+# Use an official Python runtime as a parent image
+FROM python:3.8-slim
 
-# Create app directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Install app dependencies
-COPY /requirements.txt ./
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-RUN pip install -r requirements.txt
+# Install Pygame and any other dependencies
+RUN apt-get update && apt-get install -y \
+    python3-pygame \
+    && rm -rf /var/lib/apt/lists/*
 
-# Bundle app source
-COPY src /app
-
-EXPOSE 8080
-CMD [ "python", "pong_game.py.py" ]
+# Run the Pygame script
+CMD ["python", "pong.py"]
